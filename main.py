@@ -1,19 +1,34 @@
 import requests
 import base64
 
-from requests.auth import HTTPBasicAuth
-url = 'https://hd.infocomp.pl/'
-res = requests.post(url)
-payload = 'POST https://hd.infocomp.pl/api/Authorization'
-# login = 'bartlomiej.bruzdowski@infocomp.pl'
-# haslo = 'Arcadias123!'
-passy = {'bartlomiej.bruzdowski@infocomp.pl':'Arcadias123!'}
-usrPass = 'bartlomiej.bruzdowski@infocomp.pl:Arcadias123!'
-data_bytes = usrPass.encode("utf-8")
-b64Val = base64.b64encode(data_bytes)
-print(str(b64Val))
+url = 'https://hd.infocomp.pl/api/Authorization'
+url2 = 'https://hd.infocomp.pl/api/ticket'
+params = {
+    'categoryId':36,
+    'body':'sample',
+    'subject':'Test API',
+    'priorityId':0
+}
 
-g=requests.post(url,
-                headers={"Authorization": "Basic "+ str(b64Val)},data = payload)
 
-print(g)
+loginy = {
+    'username': 'bartlomiej.bruzdowski@infocomp.pl',
+  'password':'Tomisław-apoloniusz-curus-bachleda-farrell1'}
+
+# def autoryzacja:
+#     connector = requests.post(url, headers=headers, params=params, cookies=cookies, data=data)
+def get_header(data):
+    return {
+        "Content-Type":"application/json",
+        "Authorization": "Basic "
+                              + base64.b64encode(
+            bytes(
+                f'{data["username"]}:{data["password"]}', "utf8"
+            )
+        ).decode("utf8")
+    }
+print(get_header(loginy))
+connector = requests.post(url2, headers=get_header(loginy), params=params)
+print(connector.status_code)
+r=connector.text
+print(r)
