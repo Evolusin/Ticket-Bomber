@@ -11,11 +11,23 @@ params = {
     'priorityId':0
 }
 list_tickets = []
+usr_load = 'test'
+usr_load = 'str'
+passwd_load = 1
+
+
+def login():
+    file = open('login.txt','r',encoding='utf-8')
+    line = file.readlines()
+    global usr_load
+    global passwd_load
+    usr_load = line[0].rstrip("\n")
+    passwd_load = line[1]
+
+login()
 loginy = {
-    'username': 'bartlomiej.bruzdowski@infocomp.pl',
-  'password':'Tomisław-apoloniusz-curus-bachleda-farrell1'}
-
-
+    'username': usr_load,
+  'password':passwd_load}
 def get_header(data):
     return {
         "Content-Type":"application/json",
@@ -40,9 +52,10 @@ def close_ticket(url,params):
     print(connector.status_code)
     t = connector.text
 
+
 send_ticket(url2,params)
 list_tickets = list(map(int,list_tickets))
-print(list_tickets)
+# print(list_tickets)
 
 for i in range(len(list_tickets)):
     params2={
@@ -50,5 +63,5 @@ for i in range(len(list_tickets)):
         'statusId':3,
         'assignedUserId':734
     }
-    print(params2)
+    # print(params2)
     close_ticket(url3,params2)
