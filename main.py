@@ -1,19 +1,20 @@
 import requests
 import base64
 
+
 url = 'https://hd.infocomp.pl/api/Authorization'
 url2 = 'https://hd.infocomp.pl/api/ticket'
 url3 = 'https://hd.infocomp.pl/api/UpdateTicket'
-params = {
-    'categoryId':36,
-    'body':'sample',
-    'subject':'Test API',
-    'priorityId':0
-}
 list_tickets = []
 usr_load = 'test'
 usr_load = 'str'
 passwd_load = 1
+tytul = 1
+
+def t_tresc():
+    global tytul
+    print("Wprowadź tytuł ticketu")
+    tytul = input()
 
 
 def login():
@@ -24,10 +25,17 @@ def login():
     usr_load = line[0].rstrip("\n")
     passwd_load = line[1]
 
+t_tresc()
 login()
 loginy = {
     'username': usr_load,
   'password':passwd_load}
+params = {
+    'categoryId':36,
+    'body':'jw',
+    'subject':tytul,
+    'priorityId':0
+}
 def get_header(data):
     return {
         "Content-Type":"application/json",
