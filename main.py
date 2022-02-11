@@ -10,18 +10,12 @@ params = {
     'subject':'Test API',
     'priorityId':0
 }
-# params2 = {
-#     'id':113982,
-#     'statusId':3
-# }
 list_tickets = []
-
 loginy = {
     'username': 'bartlomiej.bruzdowski@infocomp.pl',
   'password':'Tomisław-apoloniusz-curus-bachleda-farrell1'}
 
-# def autoryzacja:
-#     connector = requests.post(url, headers=headers, params=params, cookies=cookies, data=data)
+
 def get_header(data):
     return {
         "Content-Type":"application/json",
@@ -41,17 +35,14 @@ def send_ticket(url,params):
     r=connector.text
     list_tickets.append(r)
 
-
-send_ticket(url2,params)
-list_tickets = list(map(int,list_tickets))
-print(list_tickets)
-
-
-
 def close_ticket(url,params):
     connector = requests.post(url, headers=get_header(loginy), params=params)
     print(connector.status_code)
     t = connector.text
+
+send_ticket(url2,params)
+list_tickets = list(map(int,list_tickets))
+print(list_tickets)
 
 for i in range(len(list_tickets)):
     params2={
