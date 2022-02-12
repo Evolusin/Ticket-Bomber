@@ -6,16 +6,17 @@ url = 'https://hd.infocomp.pl/api/Authorization'
 url2 = 'https://hd.infocomp.pl/api/ticket'
 url3 = 'https://hd.infocomp.pl/api/UpdateTicket'
 list_tickets = []
-usr_load = 'test'
-usr_load = 'str'
-passwd_load = 1
-tytul = 1
+usr_load = None
+passwd_load = None
+tytul =[]
 
 def t_tresc():
     global tytul
-    print("Wprowadź tytuł ticketu")
-    tytul = input()
-
+    print("Wczytywanie ticketów")
+    file = open('tickety.txt', 'r', encoding='utf-8')
+    line = file.readlines()
+    for i in range(len(line)):
+        tytul.append(line[i].rstrip("\n"))
 
 def login():
     file = open('login.txt','r',encoding='utf-8')
@@ -24,18 +25,15 @@ def login():
     global passwd_load
     usr_load = line[0].rstrip("\n")
     passwd_load = line[1]
-
+#zczytanie ticketow
 t_tresc()
+#zczytanie loginu i hasla z pliku
 login()
+
 loginy = {
     'username': usr_load,
   'password':passwd_load}
-params = {
-    'categoryId':36,
-    'body':'jw',
-    'subject':tytul,
-    'priorityId':0
-}
+
 def get_header(data):
     return {
         "Content-Type":"application/json",
@@ -46,30 +44,47 @@ def get_header(data):
             )
         ).decode("utf8")
     }
-print(get_header(loginy))
+#debug - czy wygenerowane szyforwanie
+# print(get_header(loginy))
 
 #send ticket
 def send_ticket(url,params):
     connector = requests.post(url, headers=get_header(loginy), params=params)
-    print(connector.status_code)
+    #debug - status zwrotny
+    # print(connector.status_code)
     r=connector.text
     list_tickets.append(r)
 
 def close_ticket(url,params):
     connector = requests.post(url, headers=get_header(loginy), params=params)
-    print(connector.status_code)
+    #debug - status zwrotny
+    # print(connector.status_code)
     t = connector.text
 
 
-send_ticket(url2,params)
-list_tickets = list(map(int,list_tickets))
+# send tickets loaded from list tytul
+for i in range(len(tytul)):
+    params = {
+        'categoryId': 36,
+        'body': 'jw',
+        'subject': tytul[i],
+        'priorityId': 0
+    }
+    send_ticket(url2,params)
+
+try:
+    list_tickets = list(map(int,list_tickets))
+except ValueError:
+    print("ERROR!")
+    print("Upewnij sie czy plik login.txt zawiera poprawny login i haslo do HD")
+#debug - lista ticketow
 # print(list_tickets)
 
+#assign to user and close tickets from list
 for i in range(len(list_tickets)):
     params2={
         'id':list_tickets[i],
         'statusId':3,
         'assignedUserId':734
     }
-    # print(params2)
     close_ticket(url3,params2)
