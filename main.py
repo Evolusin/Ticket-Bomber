@@ -8,7 +8,10 @@ url3 = 'https://hd.infocomp.pl/api/UpdateTicket'
 list_tickets = []
 usr_load = None
 passwd_load = None
-tytul =[]
+tytul = []
+user = None
+category = None
+contain = None
 
 def t_tresc():
     global tytul
@@ -19,12 +22,21 @@ def t_tresc():
         tytul.append(line[i].rstrip("\n"))
 
 def login():
-    file = open('login.txt','r',encoding='utf-8')
+    file = open('login.ini','r',encoding='utf-8')
     line = file.readlines()
+    file2 = open('config.ini', 'r', encoding='utf-8')
+    line2 = file2.readlines()
     global usr_load
     global passwd_load
+    global user
+    global category
+    global contain
     usr_load = line[0].rstrip("\n")
     passwd_load = line[1]
+    user = line2[1].rstrip("\n")
+    category = line2[3].rstrip("\n")
+    contain = line2[5].rstrip("\n")
+
 #zczytanie ticketow
 t_tresc()
 #zczytanie loginu i hasla z pliku
@@ -65,8 +77,8 @@ def close_ticket(url,params):
 # send tickets loaded from list tytul
 for i in range(len(tytul)):
     params = {
-        'categoryId': 36,
-        'body': 'jw',
+        'categoryId': category,
+        'body': contain,
         'subject': tytul[i],
         'priorityId': 0
     }
@@ -85,6 +97,6 @@ for i in range(len(list_tickets)):
     params2={
         'id':list_tickets[i],
         'statusId':3,
-        'assignedUserId':734
+        'assignedUserId':user
     }
     close_ticket(url3,params2)
